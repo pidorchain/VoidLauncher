@@ -29,12 +29,21 @@ if (!S.accounts.length) {
 const pub = () => ({ accounts: S.accounts.map(({ refresh, ...a }) => a), active: S.active, settings: S.settings, totalMem: Math.floor(os.totalmem() / 1048576) });
 
 let win; const running = new Map();
-const send = (c, d) => win && !win.isDestroyed() && win.webContents.send(c, d);
+// частые события (прогресс, лог) не чаще раза в 100–150 мс — иначе интерфейс захлёбывается
+const THROTTLE = { progress: 100, log: 150 }, tLast = {}, tTimer = {}, tData = {};
+const send = (c, d) => {
+  if (!win || win.isDestroyed()) return;
+  const ms = THROTTLE[c];
+  if (!ms) return win.webContents.send(c, d);
+  const now = Date.now(); tData[c] = d;
+  if (now - (tLast[c] || 0) >= ms) { clearTimeout(tTimer[c]); tTimer[c] = null; tLast[c] = now; win.webContents.send(c, d); }
+  else if (!tTimer[c]) tTimer[c] = setTimeout(() => { tTimer[c] = null; tLast[c] = Date.now(); if (win && !win.isDestroyed()) win.webContents.send(c, tData[c]); }, ms - (now - tLast[c]));
+};
 const sendList = () => send('list', [...running.values()].map(r => ({ pid: r.pid, name: r.name, version: r.version })));
 
 function createWindow() {
   win = new BrowserWindow({ title: 'VoidLauncher', icon: path.join(__dirname, 'src', 'icon.png'), width: 980, height: 520, minWidth: 820, minHeight: 480, frame: false, backgroundColor: '#0b1410',
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, backgroundThrottling: true } });
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, backgroundThrottling: true, spellcheck: false } });
   win.setMenuBarVisibility(false);
   win.loadFile(path.join(__dirname, 'src', 'index.html'));
 }
@@ -95,7 +104,7 @@ async function authFor(acc) {
 }
 
 // ---- Fabric + оптимизирующие моды ----
-const dl = async (url, file) => { const r = await fetch(url); if (!r.ok) throw new Error('HTTP ' + r.status); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file + '.part', Buffer.from(await r.arrayBuffer())); fs.renameSync(file + '.part', file); };
+const dl = async (url, file) => { const r = await fetch(url); if (!r.ok) throw new Error('HTTP ' + r.status); await fs.promises.mkdir(path.dirname(file), { recursive: true }); await fs.promises.writeFile(file + '.part', Buffer.from(await r.arrayBuffer())); await fs.promises.rename(file + '.part', file); };
 async function ensureFabric(mc, gdir) {
   const lv = await (await fetch(`https://meta.fabricmc.net/v2/versions/loader/${mc}`)).json();
   if (!lv.length) throw new Error('Fabric не поддерживает ' + mc);
@@ -137,7 +146,10 @@ async function dlp(url, file, label) {
   const total = +r.headers.get('content-length') || 0; let got = 0;
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const ws = fs.createWriteStream(file);
-  for await (const c of r.body) { ws.write(c); got += c.length; if (total) send('progress', { pct: Math.round(got / total * 100), text: label + ' ' + Math.round(got / 1048576) + ' МБ' }); }
+  for await (const c of r.body) {
+    if (!ws.write(c)) await new Promise(res => ws.once('drain', res)); // не копим данные в памяти
+    got += c.length; if (total) send('progress', { pct: Math.round(got / total * 100), text: label + ' ' + Math.round(got / 1048576) + ' МБ' });
+  }
   await new Promise(res => ws.end(res));
 }
 function findJava(d) {
@@ -187,7 +199,7 @@ ipcMain.handle('install', (_, v, f) => installVer(v, f));
 
 
 // ---- моды с Modrinth ----
-const UA = { 'User-Agent': 'pidorchain/VoidLauncher/1.5.0 (t.me/v0idlauncher)' };
+const UA = { 'User-Agent': 'pidorchain/VoidLauncher/1.5.1 (t.me/v0idlauncher)' };
 const mrj = async u => { const r = await fetch(u, { headers: UA }); if (!r.ok) throw new Error('Modrinth: ошибка ' + r.status); return r.json(); };
 const modDir = v => path.join(ROOT, 'instances', v + '-fabric', 'mods');
 const userFile = v => path.join(modDir(v), '.user.json');
