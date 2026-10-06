@@ -1,6 +1,6 @@
 {
   "name": "voidlauncher",
-  "version": "1.6.0",
+  "version": "1.5.4",
   "description": "Minecraft Java launcher",
   "main": "main.js",
   "scripts": {
