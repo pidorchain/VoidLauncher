@@ -332,7 +332,9 @@ body.go header #gear:not(.hint){animation:none}
 .pnick{font:600 22px Unbounded,"Pixelify Sans",system-ui,sans-serif;word-break:break-all}
 .idchip em{font-style:normal;letter-spacing:.12em}.idchip em:empty{display:none}
 .pbadges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.pbadge{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;font:600 13px Inter,system-ui,sans-serif;border:1px solid color-mix(in srgb,var(--bc) 65%,transparent);background:color-mix(in srgb,var(--bc) 18%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--bc) 25%,transparent)}.pbadge i{font-style:normal;font-size:15px}
+.pbadge{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;font:600 13px Inter,system-ui,sans-serif;border:1px solid color-mix(in srgb,var(--bc) 65%,transparent);background:color-mix(in srgb,var(--bc) 18%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--bc) 25%,transparent)}.pbadge i{font-style:normal;font-size:15px}.pbadge img{width:20px;height:20px;object-fit:contain;border-radius:4px}#hbad img{width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-left:2px}
+#ban{position:fixed;inset:0;z-index:8;display:none;place-items:center;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}#ban.on{display:grid;animation:gin .5s ease both}
+#ban .box{width:min(400px,90%);padding:26px;border-radius:20px;text-align:center;background:var(--panel);border:1px solid rgba(255,107,107,.5);box-shadow:0 0 60px rgba(255,107,107,.2)}#ban h2{margin:0;font:600 19px Unbounded,"Pixelify Sans",system-ui,sans-serif;color:#ff6b6b}#ban .d{margin-top:8px}#ban .why{margin-top:10px;color:#ff9a9a;word-break:break-word}#ban .btn{width:100%;margin-top:16px}
 .pdate{margin-top:10px;font:600 17px Inter,system-ui,sans-serif}
 #gate{position:fixed;inset:0;z-index:7;display:none;place-items:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 #gate.on{display:grid;animation:gin .5s ease both}@keyframes gin{from{opacity:0}}
@@ -615,6 +617,7 @@ requestAnimationFrame(loop);
 </script>
 <div id="splash"><div class="sbar"><button class="mode lang" id="lang2" data-i-title="hd.lang">RU</button><button class="mode" id="winfo2" data-i-title="hd.about">i</button><button class="mode" id="wfull2" data-i-title="hd.full">⛶</button><button class="mode" id="wmin2" data-i-title="hd.min">–</button><button class="mode" id="wcls2">✕</button></div><div id="slogo"></div><div id="stitle"></div><div id="ssub" data-i="splash.sub"></div><div id="sline"></div><button id="start"><em data-i="splash.start"></em><span>→</span></button></div>
 <div id="about"><div class="box"><div class="lg" id="alogo"></div><h2>VoidLauncher</h2><div class="ver" id="aver"></div><div style="margin-top:16px"><div class="rowi"><span data-i="ab.author"></span><b id="aauth"></b></div><div class="rowi"><span>Telegram</span><button class="btn g" id="atg"></button></div><div class="rowi"><span>GitHub</span><button class="btn g" id="agh"></button></div></div><div class="d" data-i="ab.legal" style="margin-top:14px;font-size:11.5px"></div><button class="btn" id="aclose" data-i="ab.close" style="margin-top:16px"></button></div></div>
+<div id="ban"><div class="box"><h2 data-i="ban.t"></h2><div class="d" data-i="ban.d"></div><div class="why" id="banwhy"></div><button class="btn" id="banout" data-i="prof.out"></button></div></div>
 <div id="gate"><div class="gtop"><button class="mode" id="gcls" data-i-title="hd.home">✕</button></div><div class="box"><div class="lg" id="glogo"></div><h2 data-i="gate.t"></h2><div class="d" id="gdesc"></div>
 <div class="chips gmode" id="gmode"><span class="chip on" data-v="signup" data-i="gate.signup"></span><span class="chip" data-v="login" data-i="gate.login"></span></div>
 <input class="in" id="gnick" maxlength="16" autocomplete="username" spellcheck="false" data-i-ph="gate.nick">
@@ -712,7 +715,7 @@ $('.logo').innerHTML=LOGO;$('#slogo').innerHTML=LOGO.replace(/LG|LB|LW/g,m=>m+'2
 
 // ---- окно «О лаунчере» ----
 // ВПИШИТЕ СВОИ ДАННЫЕ ЗДЕСЬ:
-const ABOUT={author:'pidorchain',tg:'https://t.me/v0idlauncher',gh:'https://github.com/pidorchain',version:'1.7.0'};
+const ABOUT={author:'pidorchain',tg:'https://t.me/v0idlauncher',gh:'https://github.com/pidorchain',version:'1.6.1'};
 $('#alogo').innerHTML=LOGO.replace(/LG|LB|LW/g,m=>m+'3');
 $('#aauth').textContent=ABOUT.author;
 $('#atg').textContent=ABOUT.tg.replace('https://','');$('#agh').textContent=ABOUT.gh.replace('https://','');
@@ -732,10 +735,12 @@ function renderProfile(){
   $('#pid').textContent=ok?p.id:'—';$('#pnick').textContent=ok?p.nick:'—';$('#pav').textContent=ok?p.nick[0].toUpperCase():'?';
   $('#psince').textContent=ok&&p.since?new Date(p.since).toLocaleDateString(locale(),{day:'numeric',month:'long',year:'numeric'}):'—';
   const bl=ok&&Array.isArray(p.badges)?p.badges:[];
-  const chips=bl.map(b=>{const c=document.createElement('span');c.className='pbadge';c.style.setProperty('--bc',b.color);const i=document.createElement('i');i.textContent=b.icon;c.append(i,b.title);return c}); // только textContent: данные значков в HTML не попадают
+  const isImg=v=>typeof v==='string'&&/^data:image\/png;base64,[A-Za-z0-9+\/]+={0,2}$/.test(v);
+  const chips=bl.map(b=>{const c=document.createElement('span');c.className='pbadge';c.style.setProperty('--bc',b.color);let i;if(isImg(b.image)){i=document.createElement('img');i.src=b.image;i.alt=''}else{i=document.createElement('i');i.textContent=b.icon}c.append(i,b.title);return c}); // только textContent/src: данные значков в HTML не попадают
   if(!chips.length){const e=document.createElement('span');e.className='d';e.textContent=tr('prof.badges.none');chips.push(e)}
   $('#pbadges').replaceChildren(...chips);
-  $('#hbad').textContent=bl.map(b=>b.icon).join('');$('#hbad').title=bl.map(b=>b.title).join(', ');
+  $('#hbad').replaceChildren(...bl.map(b=>{if(isImg(b.image)){const m=document.createElement('img');m.src=b.image;m.alt='';return m}return document.createTextNode(b.icon)}));$('#hbad').title=bl.map(b=>b.title).join(', ');
+  const banned=ok&&!!p.banned;$('#ban').classList.toggle('on',banned);$('#banwhy').textContent=banned&&p.banReason?tr('ban.reason',{r:p.banReason}):'';
   $('#gate').classList.toggle('on',!!S&&!ok); // пока нет профиля, лаунчером пользоваться нельзя
 }
 // синхронизация с сервером: значки и ID могут меняться через админ-панель
@@ -775,6 +780,7 @@ $('#gmode').addEventListener('click',e=>{const c=e.target.closest('.chip');if(c&
 $('#gok').onclick=gSubmit;
 $('#gate').addEventListener('keydown',e=>{if(e.key==='Enter')gSubmit()});
 $('#gcls').onclick=()=>api.win('close');
+$('#banout').onclick=()=>safe(async()=>{S.profile=await api.profileLogout();$('#gnick').value='';gSet('login');renderProfile()});
 gSet('signup');
 const copyId=()=>{const v=S&&S.profile&&S.profile.id;if(!v)return;try{navigator.clipboard.writeText(v);toast(tr('prof.copied'))}catch{}};
 $('#pidbox').onclick=$('#pidcopy').onclick=copyId;
