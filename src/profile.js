@@ -3,7 +3,7 @@
 // Пароль нигде не сохраняется: он уходит на сервер один раз (при входе/регистрации), дальше хватает токена.
 const crypto = require('crypto');
 
-const API = (process.env.VOID_API || 'http://127.0.0.1:3000').replace(/\/+$/, ''); // ← укажите адрес вашего сервера
+const API = (process.env.VOID_API || 'https://admin-1-sqc1.onrender.com').replace(/\/+$/, ''); // ← укажите адрес вашего сервера
 const TOKEN_RE = /^[0-9a-f]{64}$/, NICK_RE = /^[A-Za-z0-9_]{3,16}$/;
 const CTRL_RE = /[\u0000-\u001f\u007f]/, IMG_RE = /^data:image\/png;base64,[A-Za-z0-9+\/]+={0,2}$/;
 // значки приходят с сервера: проверяем каждое поле, чтобы в интерфейс попало только безопасное
