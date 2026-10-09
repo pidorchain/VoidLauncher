@@ -7,8 +7,8 @@
   const D = {
     ru: {
       // шапка и меню
-      'hd.music': 'Музыка', 'hd.sfx': 'Звуки', 'hd.mode': 'Светлая / тёмная', 'hd.about': 'О лаунчере', 'hd.min': 'Свернуть', 'hd.full': 'На весь экран', 'hd.home': 'На главный экран', 'hd.lang': 'Язык / Language',
-      'nav.play': '▶ Играть', 'nav.acc': '☺ Аккаунты', 'nav.opt': '⚡ Оптимизация', 'nav.mods': '▣ Моды', 'nav.fx': '✦ Частицы', 'nav.theme': '❖ Тема',
+      'hd.settings': 'Настройки', 'hd.music': 'Музыка', 'hd.sfx': 'Звуки', 'hd.mode': 'Светлая / тёмная', 'hd.about': 'О лаунчере', 'hd.min': 'Свернуть', 'hd.full': 'На весь экран', 'hd.home': 'На главный экран', 'hd.lang': 'Язык / Language',
+      'nav.play': '▶ Играть', 'nav.acc': '☺ Аккаунты', 'nav.prof': '☻ Профиль', 'nav.opt': '⚡ Оптимизация', 'nav.mods': '▣ Моды', 'nav.fx': '✦ Частицы', 'nav.theme': '❖ Тема',
       'splash.sub': 'лаунчер для Java Edition', 'splash.start': 'Начать',
       // серверы
       'nav.srv': '☰ Серверы', 'srv.t': 'Серверы', 'srv.d': 'Онлайн и пинг обновляются сами. ☆ — в избранное, ▶ — зайти на сервер одним кликом',
@@ -33,6 +33,11 @@
       'bk.restore': 'Восстановить', 'bk.del': 'Удалить копию', 'bk.sure': 'Точно?', 'bk.loading': 'Загрузка…',
       'bk.done': 'Создано копий: {n}', 'bk.none': 'Нечего копировать — миры не менялись или их нет', 'bk.restored': 'Восстановлено: «{n}»', 'bk.deleted': 'Копия удалена',
       'm.bk.p': 'Бэкап миров…', 'm.bk.err': 'Бэкап не удался: {e}', 'm.bk.rsuffix': 'восстановлено {d}',
+      'nav.soft': '◈ Клиенты', 'soft.t': 'Клиенты', 'soft.d': 'Клиент ставится в отдельную сборку и работает только при запуске отсюда. «Играть» запускает обычный Minecraft без клиента', 'soft.for': 'Для: Minecraft {v} · {l}', 'soft.refresh': 'Обновить',
+      'soft.inst': 'Установить', 'soft.upd': 'Обновить до {t}', 'soft.run': 'Запустить', 'soft.rm': 'Удалить', 'soft.ok': 'Установлено · {t}', 'soft.no': 'Не установлено', 'soft.newer': 'есть {t}',
+      'soft.lock': 'Перед запуском проверяется ключ', 'soft.ver': 'Только для Minecraft {v}', 'soft.offline': 'Нет связи с GitHub — показаны сохранённые данные', 'soft.empty': 'Список пуст', 'soft.done': 'Готово: {n}', 'soft.removed': 'Удалено: {n}',
+      'm.soft.norel': 'Не удалось получить релиз: нет интернета или в репозитории нет подходящего файла', 'm.soft.dl': 'Скачивание: {n}', 'm.soft.done': 'Установлено: {n}', 'm.soft.bad': 'Скачанный файл повреждён — это не jar',
+      'm.soft.err': 'Ошибка клиента: {e}', 'm.soft.nocheck': 'Файл проверки ключа не найден в релизе — игра не запущена', 'm.soft.key.p': 'Проверка ключа…', 'm.soft.key': 'Ключ не принят — игра не запущена',
       // разбор вылетов
       'cr.t': 'Разбор вылетов', 'cr.d': 'Лаунчер читает crash-лог и подсказывает, какой мод или Java виноваты', 'cr.last': 'Разобрать последний', 'cr.open': 'Показать файл',
       'cr.list': 'Последние отчёты', 'cr.l.empty': 'Отчётов нет — вылетов не было', 'cr.an': 'Разобрать', 'cr.loading': 'Анализ…', 'cr.src.out': 'вывод игры',
@@ -132,7 +137,13 @@
       'bg.dim': 'Затемнение', 'bg.blur': 'Размытие', 'bg.pan': 'Прозрачность панели', 'bg.ok': 'Фон установлен', 'bg.err': 'Не удалось загрузить фото', 'bg.big': 'Файл слишком большой (до 40 МБ)',
       'themeNames': ['Изумруд', 'Аметист', 'Пламя', 'Иней', 'Закат', 'Океан', 'Лайм', 'Роза', 'Золото', 'Лаванда', 'Мята', 'Вишня', 'Космос', 'Неон', 'Лава', 'Лёд', 'Джунгли', 'Сумерки', 'Персик', 'Бирюза', 'Рубин', 'Электро', 'Арктика', 'Малина', 'Хвоя', 'Янтарь', 'Индиго', 'Сакура', 'Токсик', 'Пустота', 'Мандарин', 'Графит'],
       // «О лаунчере»
-      'ab.author': 'Создатель', 'ab.ver': 'Версия {v}', 'ab.legal': 'Неофициальный лаунчер. Minecraft — торговая марка Mojang AB.', 'ab.close': 'Закрыть',
+      'ab.author': 'Создатель', 'prof.open': 'Профиль', 'prof.badges': 'Значки', 'prof.badges.none': 'Пока нет значков. Их выдаёт администрация', 'prof.nick': 'Никнейм', 'prof.since': 'Профиль создан', 'prof.id.t': 'Ваш ID', 'prof.id.d': 'Уникальный 8-значный номер. Нажмите на ID, чтобы скопировать', 'prof.copy': 'Скопировать ID', 'prof.copied': 'ID скопирован',
+      'prof.out.t': 'Выход', 'prof.out.d': 'Чтобы войти снова, понадобятся ник и пароль', 'prof.out': 'Выйти из профиля', 'prof.out.sure': 'Точно выйти?',
+      'gate.t': 'Добро пожаловать!', 'gate.d.signup': 'Придумайте ник и пароль: так создастся ваш профиль и уникальный 8-значный ID', 'gate.d.login': 'Войдите по нику и паролю, чтобы вернуть свой профиль и ID',
+      'gate.signup': 'Регистрация', 'gate.login': 'Вход', 'gate.signup.btn': 'Создать профиль', 'gate.login.btn': 'Войти', 'gate.nick': 'Никнейм', 'gate.pass': 'Пароль', 'gate.pass2': 'Повторите пароль',
+      'gate.err.short': 'Пароль: минимум 6 символов', 'gate.err.match': 'Пароли не совпадают', 'gate.err.empty': 'Введите пароль', 'gate.ok': 'Добро пожаловать, {n}!',
+      'm.prof.offline': 'Нет связи с сервером. Проверьте интернет и попробуйте снова', 'm.prof.taken': 'Этот ник уже занят', 'm.prof.pass': 'Пароль: от 6 до 64 символов', 'm.prof.cred': 'Неверный ник или пароль', 'm.prof.rate': 'Слишком много попыток, подождите немного', 'm.prof.used': 'Эта установка уже привязана к другому профилю', 'm.prof.full': 'Сервер временно не может выдать ID', 'm.prof.srv': 'Ошибка сервера, попробуйте позже',
+      'ab.ver': 'Версия {v}', 'ab.legal': 'Неофициальный лаунчер. Minecraft — торговая марка Mojang AB.', 'ab.close': 'Закрыть',
       // сообщения главного процесса
       'm.nick': 'Ник: 3–16 символов (буквы, цифры, _)',
       'm.srv.addr': 'Неверный адрес сервера. Пример: play.example.com или play.example.com:25565', 'm.srv.dup': 'Этот сервер уже в списке', 'm.srv.max': 'В списке может быть не больше 50 серверов',
@@ -151,8 +162,8 @@
       'm.upd.msg': 'Доступна новая версия {v}', 'm.upd.detail': 'Обновление скачано. Перезапустить лаунчер и установить его сейчас? Если выбрать «Позже», оно установится при закрытии.'
     },
     en: {
-      'hd.music': 'Music', 'hd.sfx': 'Sounds', 'hd.mode': 'Light / dark', 'hd.about': 'About', 'hd.min': 'Minimize', 'hd.full': 'Fullscreen', 'hd.home': 'Home screen', 'hd.lang': 'Язык / Language',
-      'nav.play': '▶ Play', 'nav.acc': '☺ Accounts', 'nav.opt': '⚡ Performance', 'nav.mods': '▣ Mods', 'nav.fx': '✦ Particles', 'nav.theme': '❖ Theme',
+      'hd.settings': 'Settings', 'hd.music': 'Music', 'hd.sfx': 'Sounds', 'hd.mode': 'Light / dark', 'hd.about': 'About', 'hd.min': 'Minimize', 'hd.full': 'Fullscreen', 'hd.home': 'Home screen', 'hd.lang': 'Язык / Language',
+      'nav.play': '▶ Play', 'nav.acc': '☺ Accounts', 'nav.prof': '☻ Profile', 'nav.opt': '⚡ Performance', 'nav.mods': '▣ Mods', 'nav.fx': '✦ Particles', 'nav.theme': '❖ Theme',
       'splash.sub': 'launcher for Java Edition', 'splash.start': 'Start',
       // servers
       'nav.srv': '☰ Servers', 'srv.t': 'Servers', 'srv.d': 'Players and ping refresh automatically. ☆ to favorite, ▶ to join in one click',
@@ -176,6 +187,11 @@
       'bk.restore': 'Restore', 'bk.del': 'Delete backup', 'bk.sure': 'Sure?', 'bk.loading': 'Loading…',
       'bk.done': 'Backups created: {n}', 'bk.none': 'Nothing to back up — worlds are unchanged or missing', 'bk.restored': 'Restored: “{n}”', 'bk.deleted': 'Backup deleted',
       'm.bk.p': 'Backing up worlds…', 'm.bk.err': 'Backup failed: {e}', 'm.bk.rsuffix': 'restored {d}',
+      'nav.soft': '◈ Clients', 'soft.t': 'Clients', 'soft.d': 'The client is installed into its own build and only runs when launched from here. “Play” starts regular Minecraft without it', 'soft.for': 'For: Minecraft {v} · {l}', 'soft.refresh': 'Refresh',
+      'soft.inst': 'Install', 'soft.upd': 'Update to {t}', 'soft.run': 'Launch', 'soft.rm': 'Remove', 'soft.ok': 'Installed · {t}', 'soft.no': 'Not installed', 'soft.newer': '{t} available',
+      'soft.lock': 'A key is checked before launch', 'soft.ver': 'Only for Minecraft {v}', 'soft.offline': 'Cannot reach GitHub — showing saved data', 'soft.empty': 'The list is empty', 'soft.done': 'Done: {n}', 'soft.removed': 'Removed: {n}',
+      'm.soft.norel': 'Could not get the release: you are offline or the repository has no suitable file', 'm.soft.dl': 'Downloading: {n}', 'm.soft.done': 'Installed: {n}', 'm.soft.bad': 'The downloaded file is corrupt — not a jar',
+      'm.soft.err': 'Client error: {e}', 'm.soft.nocheck': 'The key check file is missing from the release — game not launched', 'm.soft.key.p': 'Checking the key…', 'm.soft.key': 'Key rejected — game not launched',
       // crash analysis
       'cr.t': 'Crash analysis', 'cr.d': 'The launcher reads the crash log and tells which mod or Java is at fault', 'cr.last': 'Analyze latest', 'cr.open': 'Show file',
       'cr.list': 'Recent reports', 'cr.l.empty': 'No reports — no crashes so far', 'cr.an': 'Analyze', 'cr.loading': 'Analyzing…', 'cr.src.out': 'game output',
@@ -269,7 +285,13 @@
       'bg.t': 'Custom background', 'bg.d': 'Set your own photo as the launcher background (JPG, PNG, WEBP, GIF)', 'bg.pick': 'Choose photo', 'bg.clr': 'Remove',
       'bg.dim': 'Dimming', 'bg.blur': 'Blur', 'bg.pan': 'Panel transparency', 'bg.ok': 'Background set', 'bg.err': 'Could not load the photo', 'bg.big': 'File is too large (max 40 MB)',
       'themeNames': ['Emerald', 'Amethyst', 'Flame', 'Frost', 'Sunset', 'Ocean', 'Lime', 'Rose', 'Gold', 'Lavender', 'Mint', 'Cherry', 'Cosmos', 'Neon', 'Lava', 'Ice', 'Jungle', 'Twilight', 'Peach', 'Turquoise', 'Ruby', 'Electric', 'Arctic', 'Raspberry', 'Pine', 'Amber', 'Indigo', 'Sakura', 'Toxic', 'Void', 'Tangerine', 'Graphite'],
-      'ab.author': 'Creator', 'ab.ver': 'Version {v}', 'ab.legal': 'Unofficial launcher. Minecraft is a trademark of Mojang AB.', 'ab.close': 'Close',
+      'ab.author': 'Creator', 'prof.open': 'Profile', 'prof.badges': 'Badges', 'prof.badges.none': 'No badges yet. They are awarded by the administration', 'prof.nick': 'Nickname', 'prof.since': 'Profile created', 'prof.id.t': 'Your ID', 'prof.id.d': 'A unique 8-digit number. Click the ID to copy it', 'prof.copy': 'Copy ID', 'prof.copied': 'ID copied',
+      'prof.out.t': 'Sign out', 'prof.out.d': 'You will need your nickname and password to sign in again', 'prof.out': 'Sign out', 'prof.out.sure': 'Really sign out?',
+      'gate.t': 'Welcome!', 'gate.d.signup': 'Choose a nickname and password to create your profile and a unique 8-digit ID', 'gate.d.login': 'Sign in with your nickname and password to restore your profile and ID',
+      'gate.signup': 'Sign up', 'gate.login': 'Sign in', 'gate.signup.btn': 'Create profile', 'gate.login.btn': 'Sign in', 'gate.nick': 'Nickname', 'gate.pass': 'Password', 'gate.pass2': 'Repeat password',
+      'gate.err.short': 'Password: at least 6 characters', 'gate.err.match': 'Passwords do not match', 'gate.err.empty': 'Enter your password', 'gate.ok': 'Welcome, {n}!',
+      'm.prof.offline': 'No connection to the server. Check your internet and try again', 'm.prof.taken': 'This nickname is already taken', 'm.prof.pass': 'Password: 6 to 64 characters', 'm.prof.cred': 'Wrong nickname or password', 'm.prof.rate': 'Too many attempts, please wait a bit', 'm.prof.used': 'This installation is already linked to another profile', 'm.prof.full': 'The server cannot issue an ID right now', 'm.prof.srv': 'Server error, please try again later',
+      'ab.ver': 'Version {v}', 'ab.legal': 'Unofficial launcher. Minecraft is a trademark of Mojang AB.', 'ab.close': 'Close',
       'm.nick': 'Nickname: 3–16 characters (letters, digits, _)',
       'm.srv.addr': 'Invalid server address. Example: play.example.com or play.example.com:25565', 'm.srv.dup': 'This server is already in the list', 'm.srv.max': 'The list can hold at most 50 servers',
       'm.ms.closed': 'The sign-in window was closed — please try again', 'm.ms.noxbox': 'This Microsoft account has no Xbox profile. Create one at xbox.com and try again',

@@ -299,13 +299,57 @@ input[type=range],input[type=color],input[type=checkbox],select{-webkit-user-sel
 button,.btn,.chip,.sw,nav,header,label{cursor:pointer}header,nav{cursor:default}
 input:not([type]),input[type=text],input[type=search],textarea{cursor:text}
 html.full .app{padding:0}html.full .win{width:100%!important;height:100%!important;max-width:none;border-radius:0;border-width:0}html.full .win::before{display:none}
+/* софты */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:4px}
+.sf{display:flex;flex-direction:column;gap:6px;padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);transition:border-color .4s,transform .4s cubic-bezier(.22,1,.36,1);animation:up .45s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(min(var(--i,0),8)*40ms)}
+.sf:hover{border-color:rgba(var(--accrgb),.5);transform:translateY(-2px)}
+.sf .ico{width:56px;height:56px;margin-bottom:6px;border-radius:14px;display:grid;place-items:center;font:600 26px "Pixelify Sans",system-ui,sans-serif;color:#03120a;box-shadow:0 0 22px rgba(var(--accrgb),.3)}
+.sf .t{font-size:15px}.sf .st{font-size:12.5px;color:var(--acc);font-weight:600}.sf .st.no{color:var(--mute)}
+.sf .sb{display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap}.sf .sb .btn:first-child{flex:1}
+
+/* ===== шестерёнка + часы ===== */
+.clock{display:flex;align-items:center;gap:10px;margin-left:10px;padding-left:14px;border-left:1px solid var(--line);white-space:nowrap;-webkit-app-region:no-drag;user-select:none}
+.clock b{font:600 20px Unbounded,"Pixelify Sans",system-ui,sans-serif;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.clock .cd{display:flex;flex-direction:column;line-height:1.25;font:500 11.5px Inter,system-ui,sans-serif;color:var(--mute)}
+.clock .cd i{font-style:normal}.clock .cd i:first-child{color:var(--text)}.clock .cd i:last-child::first-letter{text-transform:uppercase}
+.tray{display:flex;align-items:center;gap:6px;padding:8px 4px;margin:-8px -4px -8px 0;overflow:hidden;max-width:0;opacity:0;visibility:hidden;transition:max-width .55s cubic-bezier(.22,1,.36,1),opacity .35s,margin .55s cubic-bezier(.22,1,.36,1),visibility 0s .55s}
+.tray.open{max-width:260px;opacity:1;visibility:visible;margin-right:2px;transition-delay:0s}
+.gear svg{display:block;margin:auto;transition:transform .55s cubic-bezier(.34,1.56,.64,1)}
+.gear.open{background:rgba(var(--accrgb),.15)}.gear.open svg{transform:rotate(180deg)}
+.gear:hover{transform:none}.gear:hover svg{transform:rotate(60deg)}.gear.open:hover svg{transform:rotate(240deg)}
+body.go header #gear:not(.hint){animation:none}
+/* ---- профиль и ID ---- */
+.idchip{flex:none;display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid rgba(var(--accrgb),.4);background:rgba(var(--accrgb),.1);color:var(--text);font:600 12.5px Inter,system-ui,sans-serif;cursor:pointer;-webkit-app-region:no-drag;transition:background .3s,box-shadow .3s,transform .3s}
+.idchip span{color:var(--mute);font-size:10.5px;letter-spacing:.1em}.idchip b{font-variant-numeric:tabular-nums;letter-spacing:.08em}
+.idchip:hover{background:rgba(var(--accrgb),.2);box-shadow:0 0 14px rgba(var(--accrgb),.35)}.idchip:active{transform:scale(.95)}.idchip[hidden]{display:none}
+.phero{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.pidbox{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:12px;border:1px solid rgba(var(--accrgb),.45);background:rgba(var(--accrgb),.1);cursor:pointer;transition:background .3s,box-shadow .3s,transform .3s}
+.pidbox:hover{background:rgba(var(--accrgb),.2);box-shadow:0 0 18px rgba(var(--accrgb),.35)}.pidbox:active{transform:scale(.97)}
+.pidbox span{color:var(--mute);font:600 12px Inter,system-ui,sans-serif;letter-spacing:.12em}
+.pidbox b{font:600 24px ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums;letter-spacing:.14em}
+.pwho{display:flex;align-items:center;gap:16px;min-width:0}
+.pav{flex:none;width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font:700 28px Unbounded,"Pixelify Sans",system-ui,sans-serif;color:#06130c;background:linear-gradient(135deg in oklab,var(--acc),var(--acc2));box-shadow:0 0 22px rgba(var(--accrgb),.45)}
+.pnick{font:600 22px Unbounded,"Pixelify Sans",system-ui,sans-serif;word-break:break-all}
+.idchip em{font-style:normal;letter-spacing:.12em}.idchip em:empty{display:none}
+.pbadges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pbadge{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;font:600 13px Inter,system-ui,sans-serif;border:1px solid color-mix(in srgb,var(--bc) 65%,transparent);background:color-mix(in srgb,var(--bc) 18%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--bc) 25%,transparent)}.pbadge i{font-style:normal;font-size:15px}
+.pdate{margin-top:10px;font:600 17px Inter,system-ui,sans-serif}
+#gate{position:fixed;inset:0;z-index:7;display:none;place-items:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#gate.on{display:grid;animation:gin .5s ease both}@keyframes gin{from{opacity:0}}
+#gate .gtop{position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:flex-end;padding:0 14px;-webkit-app-region:drag}#gate .gtop .mode{-webkit-app-region:no-drag}
+#gate .box{width:min(400px,90%);padding:26px;border-radius:20px;text-align:center;background:var(--panel);border:1px solid rgba(var(--accrgb),.35);box-shadow:0 0 60px rgba(var(--accrgb),.25)}
+#gate .lg{width:64px;margin:0 auto 10px}#gate .lg svg{width:100%;display:block;filter:drop-shadow(0 0 16px rgba(var(--accrgb),.6))}
+#gate h2{margin:0;font:600 19px Unbounded,"Pixelify Sans",system-ui,sans-serif}
+#gate .d{margin-top:8px}#gate .gmode{justify-content:center}#gate .btn{width:100%;margin-top:16px}
+#gate .gerr{min-height:18px;margin-top:10px;color:#ff6b6b;font-size:12.5px}
+@media(max-width:760px){.idchip span{display:none}}
 </style>
 </head>
 <body>
 <div id="bgimg"></div><div id="bgdim"></div><canvas id="fx"></canvas><div class="blob b1"></div><div class="blob b2"></div>
 <div class="app"><div class="win">
-<header><div class="logo"></div><h1>VoidLauncher</h1><div class="sp"></div><button class="mode hint" id="mus" data-i-title="hd.music">♪</button><button class="mode" id="sfx" data-i-title="hd.sfx" style="margin-left:6px;margin-right:6px">◉</button><button class="mode" id="mode" data-i-title="hd.mode">☾</button><button class="mode lang" id="lang" data-i-title="hd.lang" style="margin-left:6px">RU</button><button class="mode" id="winfo" style="margin-left:6px" data-i-title="hd.about">i</button><button class="mode" id="wfull" style="margin-left:6px" data-i-title="hd.full">⛶</button><button class="mode" id="wmin" style="margin-left:6px" data-i-title="hd.min">–</button><button class="mode" id="wcls" style="margin-left:6px" data-i-title="hd.home">✕</button></header>
-<nav id="nav"><span id="ind"></span><button class="on" data-t="play" data-i="nav.play"></button><button data-t="srvt" data-i="nav.srv"></button><button data-t="acc" data-i="nav.acc"></button><button data-t="skin" data-i="nav.skin"></button><button data-t="opt" data-i="nav.opt"></button><button data-t="modt" data-i="nav.mods"></button><button data-t="bkt" data-i="nav.bk"></button><button data-t="ptab" data-i="nav.fx"></button><button data-t="theme" data-i="nav.theme"></button></nav>
+<header><div class="logo"></div><h1>VoidLauncher</h1><button class="idchip" id="hid" hidden data-i-title="prof.open"><span>ID</span><b id="hidv"></b><em id="hbad"></em></button><div class="clock" id="clock"><b id="ctime">--:--:--</b><span class="cd"><i id="cdate"></i><i id="cday"></i></span></div><div class="sp"></div><div class="tray" id="tray"><button class="mode hint" id="mus" data-i-title="hd.music">♪</button><button class="mode" id="sfx" data-i-title="hd.sfx">◉</button><button class="mode" id="mode" data-i-title="hd.mode">☾</button><button class="mode lang" id="lang" data-i-title="hd.lang">RU</button><button class="mode" id="winfo" data-i-title="hd.about">i</button></div><button class="mode hint gear" id="gear" data-i-title="hd.settings" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button class="mode" id="wfull" style="margin-left:6px" data-i-title="hd.full">⛶</button><button class="mode" id="wmin" style="margin-left:6px" data-i-title="hd.min">–</button><button class="mode" id="wcls" style="margin-left:6px" data-i-title="hd.home">✕</button></header>
+<nav id="nav"><span id="ind"></span><button class="on" data-t="play" data-i="nav.play"></button><button data-t="prof" data-i="nav.prof"></button><button data-t="srvt" data-i="nav.srv"></button><button data-t="acc" data-i="nav.acc"></button><button data-t="skin" data-i="nav.skin"></button><button data-t="opt" data-i="nav.opt"></button><button data-t="modt" data-i="nav.mods"></button><button data-t="softt" data-i="nav.soft"></button><button data-t="bkt" data-i="nav.bk"></button><button data-t="ptab" data-i="nav.fx"></button><button data-t="theme" data-i="nav.theme"></button></nav>
 <main><section class="tab on" id="play">
 <div class="card wide"><div class="row"><div class="who"><div class="av" id="cav">?</div><div><div class="t" id="cname"></div><div class="d" id="ctype"></div></div></div><button class="btn" id="go" data-i="play.go"></button></div></div>
 <div class="card"><div class="t" data-i="ver.t"></div><div class="d" data-i="ver.d"></div><select id="ver"></select><div class="d" id="vst" style="margin-top:8px"></div></div>
@@ -314,6 +358,13 @@ html.full .app{padding:0}html.full .win{width:100%!important;height:100%!importa
 <div class="card wide"><div class="row"><div><div class="t" data-i="news.t"></div><div class="d" data-i="news.d"></div></div><div class="nbtns"><button class="ib" id="nprev" aria-label="‹">‹</button><button class="ib" id="nnext" aria-label="›">›</button><button class="btn g" id="nrefresh" data-i="news.refresh"></button></div></div><div class="d" id="nstat" style="margin-top:6px;color:var(--acc2)"></div><div class="news" id="nlist"></div></div>
 <div class="card wide"><div class="t" data-i="runs.t"></div><div class="d" data-i="runs.d"></div><div id="runs"></div></div>
 <div class="card wide"><div class="t" data-i="stat.t"></div><div class="d" data-i="stat.d"></div><div class="tiles" id="stat-tiles"></div><div class="d" data-i="stat.recent" style="margin-top:14px"></div><div id="stat-list"></div></div>
+</section>
+<section class="tab" id="prof">
+<div class="card wide phero"><div class="pidbox" id="pidbox" data-i-title="prof.copy"><span>ID</span><b id="pid">—</b></div><div class="pwho"><div class="pav" id="pav">?</div><div><div class="d" data-i="prof.nick"></div><div class="pnick" id="pnick">—</div></div></div></div>
+<div class="card wide"><div class="t" data-i="prof.badges"></div><div class="pbadges" id="pbadges"></div></div>
+<div class="card"><div class="t" data-i="prof.since"></div><div class="pdate" id="psince">—</div></div>
+<div class="card"><div class="t" data-i="prof.id.t"></div><div class="d" data-i="prof.id.d"></div><div class="chips"><button class="btn g" id="pidcopy" data-i="prof.copy"></button></div></div>
+<div class="card"><div class="t" data-i="prof.out.t"></div><div class="d" data-i="prof.out.d"></div><div class="chips"><button class="btn g" id="pout" data-i="prof.out"></button></div></div>
 </section>
 <section class="tab" id="srvt">
 <div class="card wide"><div class="row"><div><div class="t" data-i="srv.t"></div><div class="d" data-i="srv.d"></div></div><button class="btn g" id="srefresh" data-i="srv.refresh"></button></div><div class="srvadd"><input class="in" id="sname" maxlength="32" data-i-ph="srv.name.ph"><input class="in" id="saddr" maxlength="100" spellcheck="false" data-i-ph="srv.addr.ph"><button class="btn" id="sadd" data-i="srv.add"></button></div></div>
@@ -361,6 +412,10 @@ html.full .app{padding:0}html.full .win{width:100%!important;height:100%!importa
 <div class="card wide"><div class="chips" id="mtype" style="margin:0 0 12px"><span class="chip on" data-v="mod" data-i="mod.k.mod"></span><span class="chip" data-v="shader" data-i="mod.k.shader"></span><span class="chip" data-v="resourcepack" data-i="mod.k.resourcepack"></span></div><div class="t" id="mtitle"></div><div class="d" id="mver">Fabric</div><input class="in" id="mq"><div class="d" id="mwarn" data-i="mod.warn" style="display:none;color:var(--acc2);margin-top:8px"></div><div class="d" id="mhint" style="display:none;margin-top:8px"></div></div>
 <div class="card wide"><div class="t" data-i="mod.found"></div><div id="mres"></div></div>
 <div class="card wide"><div class="t" data-i="mod.inst"></div><div class="d" id="minstd"></div><div id="minst"></div></div>
+</section>
+<section class="tab" id="softt">
+<div class="card wide"><div class="row"><div><div class="t" data-i="soft.t"></div><div class="d" data-i="soft.d"></div><div class="d" id="softfor" style="margin-top:4px"></div></div><div class="nbtns"><button class="btn g" id="softref" data-i="soft.refresh"></button></div></div><div class="d" id="softst" style="margin-top:6px;color:var(--acc2)"></div></div>
+<div class="card wide"><div class="sgrid" id="softl"></div></div>
 </section>
 <section class="tab" id="bkt">
 <div class="card wide"><div class="row"><div><div class="t" data-i="bk.t"></div><div class="d" data-i="bk.d"></div></div><div class="nbtns"><button class="btn g" id="bkopen" data-i="bk.open"></button><button class="btn" id="bkall" data-i="bk.all"></button></div></div></div>
@@ -416,7 +471,7 @@ function initAudio(){if(AC)return;AC=new(window.AudioContext||window.webkitAudio
  const pad=()=>{const t=AC.currentTime;CH[ci++%4].forEach(f=>{voice(f,t,9,'sine',.07,mbus,3);voice(f*2.003,t,9,'triangle',.018,mbus,3.5)});setTimeout(pad,7500)};
  const mel=()=>{const t=AC.currentTime,f=SC[Math.random()*SC.length|0];voice(f,t,3.2,'sine',.05,mbus,.03);if(Math.random()<.35)voice(f*1.5,t+.25,2.6,'sine',.025,mbus,.03);setTimeout(mel,1500+Math.random()*2200)};
  pad();setTimeout(mel,2500)}
-function boot(){initAudio();if(AC.state==='suspended')AC.resume();$('#mus').classList.remove('hint')}
+function boot(){initAudio();if(AC.state==='suspended')AC.resume();$('#mus').classList.remove('hint');$('#gear').classList.remove('hint')}
 addEventListener('pointerdown',boot,{once:true});
 function sfxPlay(kind,v){if(!AC||!sfxOn)return;const t=AC.currentTime;
  if(kind==='on'){voice(660,t,.35,'sine',.09,sbus,.005);voice(990,t+.05,.4,'sine',.06,sbus,.005)}
@@ -560,6 +615,12 @@ requestAnimationFrame(loop);
 </script>
 <div id="splash"><div class="sbar"><button class="mode lang" id="lang2" data-i-title="hd.lang">RU</button><button class="mode" id="winfo2" data-i-title="hd.about">i</button><button class="mode" id="wfull2" data-i-title="hd.full">⛶</button><button class="mode" id="wmin2" data-i-title="hd.min">–</button><button class="mode" id="wcls2">✕</button></div><div id="slogo"></div><div id="stitle"></div><div id="ssub" data-i="splash.sub"></div><div id="sline"></div><button id="start"><em data-i="splash.start"></em><span>→</span></button></div>
 <div id="about"><div class="box"><div class="lg" id="alogo"></div><h2>VoidLauncher</h2><div class="ver" id="aver"></div><div style="margin-top:16px"><div class="rowi"><span data-i="ab.author"></span><b id="aauth"></b></div><div class="rowi"><span>Telegram</span><button class="btn g" id="atg"></button></div><div class="rowi"><span>GitHub</span><button class="btn g" id="agh"></button></div></div><div class="d" data-i="ab.legal" style="margin-top:14px;font-size:11.5px"></div><button class="btn" id="aclose" data-i="ab.close" style="margin-top:16px"></button></div></div>
+<div id="gate"><div class="gtop"><button class="mode" id="gcls" data-i-title="hd.home">✕</button></div><div class="box"><div class="lg" id="glogo"></div><h2 data-i="gate.t"></h2><div class="d" id="gdesc"></div>
+<div class="chips gmode" id="gmode"><span class="chip on" data-v="signup" data-i="gate.signup"></span><span class="chip" data-v="login" data-i="gate.login"></span></div>
+<input class="in" id="gnick" maxlength="16" autocomplete="username" spellcheck="false" data-i-ph="gate.nick">
+<input class="in" id="gpass" type="password" maxlength="64" autocomplete="new-password" data-i-ph="gate.pass">
+<input class="in" id="gpass2" type="password" maxlength="64" autocomplete="new-password" data-i-ph="gate.pass2">
+<div class="gerr" id="gerr"></div><button class="btn" id="gok"></button></div></div>
 <div class="toast" id="toast"></div>
 <script>// ---- логика лаунчера ----
 let S,saveT,busy=false,lastOn=true,stat=null,running=[],lgK='lg.ready',vstK='',aboutV='';
@@ -613,7 +674,7 @@ api.onList(l=>{running=l;
   setLdr(st.loader);$('#sav').classList.toggle('on',st.sav);
   const vs=await api.versions();$('#ver').innerHTML=vs.map(v=>`<option>${v}</option>`).join('');
   $('#ver').value=vs.includes(st.version)?st.version:vs[0];
-  renderAcc();renderRuns();if(S.settings.lang!==LANG)api.save({lang:LANG});loadCr();
+  renderAcc();renderProfile();syncProfile();renderRuns();if(S.settings.lang!==LANG)api.save({lang:LANG});loadCr();
 })();
 
 // ---- авто-установка версии при выборе ----
@@ -633,7 +694,7 @@ $$('nav button').forEach((b,i)=>b.style.setProperty('--n',i));$$('header h1,head
 function go(on){document.body.classList.toggle('go',on);if(on){restagger($('#'+$('#nav .on').dataset.t));place($('#nav .on'))}}
 $('#start').onclick=()=>{go(true);sfxPlay('theme')};
 $('.logo').onclick=$('header h1').onclick=()=>{go(false);sfxPlay('mode',1)};
-addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.body.classList.contains('go'))go(true)});
+addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.body.classList.contains('go')&&!$('#gate').classList.contains('on'))go(true)});
 $('#wfull').onclick=$('#wfull2').onclick=()=>api.win('full');
 let fsOn=false;const bigWin=()=>innerWidth>=screen.availWidth-2&&innerHeight>=screen.availHeight-2;const applyFull=()=>document.documentElement.classList.toggle('full',fsOn||bigWin());
 const setFull=f=>{fsOn=!!f;applyFull();$('#wfull').textContent=$('#wfull2').textContent=f?'🗗':'⛶'};addEventListener('resize',applyFull);applyFull();
@@ -661,6 +722,69 @@ async function about(on){if(on){let v=ABOUT.version;try{if(api.version)v=await a
 $('#winfo').onclick=$('#winfo2').onclick=()=>about(true);$('#aclose').onclick=()=>about(false);
 $('#about').addEventListener('pointerdown',e=>{if(e.target.id==='about')about(false)});
 addEventListener('keydown',e=>{if(e.key==='Escape')about(false)});
+
+// ---- профиль: регистрация / вход, ID ----
+let gMode='signup',gBusy=false;
+const locale=()=>LANG==='ru'?'ru-RU':'en-US';
+function renderProfile(){
+  const p=(S&&S.profile)||{},ok=!!p.registered;
+  $('#hid').hidden=!ok;$('#hidv').textContent=ok?p.id:'';
+  $('#pid').textContent=ok?p.id:'—';$('#pnick').textContent=ok?p.nick:'—';$('#pav').textContent=ok?p.nick[0].toUpperCase():'?';
+  $('#psince').textContent=ok&&p.since?new Date(p.since).toLocaleDateString(locale(),{day:'numeric',month:'long',year:'numeric'}):'—';
+  const bl=ok&&Array.isArray(p.badges)?p.badges:[];
+  const chips=bl.map(b=>{const c=document.createElement('span');c.className='pbadge';c.style.setProperty('--bc',b.color);const i=document.createElement('i');i.textContent=b.icon;c.append(i,b.title);return c}); // только textContent: данные значков в HTML не попадают
+  if(!chips.length){const e=document.createElement('span');e.className='d';e.textContent=tr('prof.badges.none');chips.push(e)}
+  $('#pbadges').replaceChildren(...chips);
+  $('#hbad').textContent=bl.map(b=>b.icon).join('');$('#hbad').title=bl.map(b=>b.title).join(', ');
+  $('#gate').classList.toggle('on',!!S&&!ok); // пока нет профиля, лаунчером пользоваться нельзя
+}
+// синхронизация с сервером: значки и ID могут меняться через админ-панель
+let pBusy=false;
+async function syncProfile(){
+  if(pBusy||!S||!S.profile||!S.profile.registered)return;pBusy=true;
+  try{const p=await api.profile();if(p&&p.registered&&S&&S.profile&&S.profile.registered){S.profile=p;renderProfile()}}catch{}finally{pBusy=false}
+}
+$('#nav button[data-t=prof]').addEventListener('click',syncProfile);
+setInterval(()=>{if(!document.hidden)syncProfile()},120000);
+function gText(){
+  $('#gdesc').textContent=tr(gMode==='signup'?'gate.d.signup':'gate.d.login');
+  $('#gok').textContent=tr(gMode==='signup'?'gate.signup.btn':'gate.login.btn');
+}
+function gSet(m){
+  gMode=m;$$('#gmode .chip').forEach(c=>c.classList.toggle('on',c.dataset.v===m));
+  $('#gpass2').style.display=m==='signup'?'':'none';$('#gpass').autocomplete=m==='signup'?'new-password':'current-password';
+  $('#gerr').textContent='';gText();
+}
+async function gSubmit(){
+  if(gBusy)return;
+  const nick=$('#gnick').value.trim(),pw=$('#gpass').value,err=$('#gerr');err.textContent='';
+  if(!/^\w{3,16}$/.test(nick)){err.textContent=tr('m.nick');return}
+  if(gMode==='signup'){
+    if(pw.length<6){err.textContent=tr('gate.err.short');return}
+    if(pw!==$('#gpass2').value){err.textContent=tr('gate.err.match');return}
+  }else if(!pw){err.textContent=tr('gate.err.empty');return}
+  gBusy=true;$('#gok').disabled=true;
+  try{
+    S.profile=await api.profileAuth(gMode,nick,pw);
+    $('#gpass').value=$('#gpass2').value='';renderProfile();sfxPlay('on');toast(tr('gate.ok',{n:S.profile.nick}));
+  }catch(e){err.textContent=String(e.message||e).replace(/^Error invoking remote method '\w+': (Error: )?/,'')}
+  finally{gBusy=false;$('#gok').disabled=false}
+}
+$('#glogo').innerHTML=LOGO.replace(/LG|LB|LW/g,m=>m+'4');
+$('#gmode').addEventListener('click',e=>{const c=e.target.closest('.chip');if(c&&!gBusy&&c.dataset.v!==gMode){gSet(c.dataset.v);sfxPlay('chip')}});
+$('#gok').onclick=gSubmit;
+$('#gate').addEventListener('keydown',e=>{if(e.key==='Enter')gSubmit()});
+$('#gcls').onclick=()=>api.win('close');
+gSet('signup');
+const copyId=()=>{const v=S&&S.profile&&S.profile.id;if(!v)return;try{navigator.clipboard.writeText(v);toast(tr('prof.copied'))}catch{}};
+$('#pidbox').onclick=$('#pidcopy').onclick=copyId;
+$('#hid').onclick=()=>{go(true);$('#nav button[data-t=prof]').click()};
+let outT=0;
+$('#pout').onclick=()=>safe(async()=>{
+  if(!outT){$('#pout').textContent=tr('prof.out.sure');outT=setTimeout(()=>{outT=0;$('#pout').textContent=tr('prof.out')},3500);return} // второй клик подтверждает выход
+  clearTimeout(outT);outT=0;$('#pout').textContent=tr('prof.out');
+  S.profile=await api.profileLogout();$('#gnick').value='';gSet('login');renderProfile();
+});
 
 // ---- моды, шейдеры, ресурспаки ----
 let mHits=[],mInst=[],mT,mLoaded='',mKind='mod';
@@ -851,6 +975,34 @@ api.onCrash(r=>{
 });
 $('#nav button[data-t=play]').addEventListener('click',e=>e.currentTarget.classList.remove('alert'));
 
+// ---- софты ----
+let softs=[],softOnce=false;
+const softLdr=()=>curLoader()==='vanilla'?'fabric':curLoader();
+function renderSofts(){
+  if(!softOnce)return;
+  $('#softfor').textContent=tr('soft.for',{v:(softs[0]&&softs[0].ver)||$('#ver').value||'?',l:LN[softLdr()]});
+  $('#softst').textContent=softs.length&&softs.every(s=>!s.online)?tr('soft.offline'):'';
+  $('#softl').innerHTML=softs.map((s,i)=>{
+    const desc=(s.desc&&(s.desc[LANG]||s.desc.ru))||'',c=s.color||['#4ade80','#22d3ee'];
+    const st=s.installed?tr('soft.ok',{t:s.tag||'—'})+(s.upd?' · '+tr('soft.newer',{t:s.latest}):''):tr('soft.no')+(s.size?' · '+fmtSize(s.size):'');
+    return `<div class="sf" style="--i:${i}"><div class="ico" style="background:linear-gradient(135deg,${esc(c[0])},${esc(c[1])})">${esc((s.title||'?').slice(0,1).toUpperCase())}</div><div class="t">${esc(s.title)}</div><div class="d">${esc(desc)} · Minecraft ${esc(s.ver||'')}${s.lock?' · '+tr('soft.lock'):''}</div><div class="st${s.installed?'':' no'}">${esc(st)}</div><div class="sb"><button class="btn" data-srun="${esc(s.id)}">${tr('soft.run')}</button>${!s.installed?`<button class="btn g" data-sinst="${esc(s.id)}">${tr('soft.inst')}</button>`:s.upd?`<button class="btn g" data-sinst="${esc(s.id)}">${tr('soft.upd',{t:s.latest})}</button>`:''}${s.installed?`<button class="ib" data-srm="${esc(s.id)}" title="${tr('soft.rm')}">✕</button>`:''}</div></div>`}).join('')||`<div class="d">${tr('soft.empty')}</div>`;
+}
+async function loadSofts(force){
+  try{softs=await api.softs($('#ver').value,softLdr(),!!force)}catch{softs=[]}
+  softOnce=true;renderSofts();
+}
+const softBusy=on=>$$('#softt button').forEach(b=>b.disabled=on);
+const softDo=f=>safe(async()=>{softBusy(true);try{await f()}finally{softBusy(false);await loadSofts()}});
+$('#nav button[data-t=softt]').addEventListener('click',()=>loadSofts());
+$('#softref').onclick=()=>{ripple($('#softref'));sfxPlay('chip');softDo(()=>api.softs($('#ver').value,softLdr(),true))};
+$('#softl').onclick=e=>{
+  const r=e.target.closest('[data-srun]'),i=e.target.closest('[data-sinst]'),x=e.target.closest('[data-srm]');
+  if(r&&!r.disabled){const id=r.dataset.srun;if(busy)return;sfxPlay('theme');$('#nav button[data-t=play]').click(); // прогресс запуска виден на вкладке «Играть»
+    safe(async()=>{busy=true;$('#go').disabled=true;try{await api.softRun(id,gather())}catch(er){$('#pb').style.setProperty('--p',0);setLg('lg.launchErr');throw er}finally{busy=false;renderAcc();loadSofts()}})}
+  else if(i&&!i.disabled){const s=softs.find(z=>z.id===i.dataset.sinst);sfxPlay('chip');softDo(async()=>{await api.softInstall(s.id,$('#ver').value,softLdr());toast(tr('soft.done',{n:s.title}));sfxPlay('on')})}
+  else if(x&&!x.disabled){const s=softs.find(z=>z.id===x.dataset.srm);sfxPlay('chip');softDo(async()=>{await api.softRemove(s.id,$('#ver').value,softLdr());toast(tr('soft.removed',{n:s.title}));sfxPlay('off')})}
+};
+
 // ---- язык интерфейса ----
 function renderRuns(){$('#runs').innerHTML=running.map(r=>`<div class="acc" style="cursor:default"><div class="who"><div class="av">${esc(r.name[0])}</div><div><div class="t">${esc(r.name)}</div><div class="d">${tr('runs.mc',{v:esc(r.version),pid:r.pid})}</div></div></div><span class="key">${tr('runs.ing')}</span></div>`).join('')||`<div class="d" style="margin-top:10px">${tr('runs.none')}</div>`}
 // ===== Скины: 3D-превью, редактор, библиотека =====
@@ -1015,15 +1167,31 @@ function applyLang(){
   $$('[data-i-ph]').forEach(e=>e.placeholder=tr(e.dataset.iPh));
   $$('[data-i-title]').forEach(e=>e.title=tr(e.dataset.iTitle));
   $$('.lang').forEach(b=>b.textContent=LANG.toUpperCase());
+  gText();
   $$('.th').forEach((x,i)=>x.title=tn(i));$('#tname').textContent=CUST?tr('th.my.name'):tn(tIdx);
   if(lgK)$('#lg').textContent=tr(lgK);if(vstK)$('#vst').textContent=tr(vstK);
   if(aboutV)$('#aver').textContent=tr('ab.ver',{v:aboutV});
-  if(S){renderAcc();skLang();fmtRam();renderRuns();mLabels();if(mLoaded)renderMods();if(sLoaded)renderSrv();renderStats()}
+  if(S){renderAcc();renderProfile();skLang();fmtRam();renderRuns();mLabels();if(mLoaded)renderMods();if(sLoaded)renderSrv();renderStats()}
   else{$('#cname').textContent=tr('play.noacc');$('#ctype').textContent=tr('play.noacc.d')}
-  renderNews();renderBk();renderCr();place($('#nav .on'));set('mc-lang',LANG)
+  renderNews();renderBk();renderSofts();renderCr();place($('#nav .on'));set('mc-lang',LANG);if(typeof tickClock==='function')tickClock()
 }
 function setLang(l){if(l===LANG)return;LANG=l;applyLang();api.save({lang:l});sfxPlay('tab')}
 $('#lang').onclick=$('#lang2').onclick=()=>setLang(I18N.LANGS[(I18N.LANGS.indexOf(LANG)+1)%I18N.LANGS.length]);
+
+// шестерёнка: разворачивает панель настроек влево
+(()=>{const tray=$('#tray'),gear=$('#gear');
+ const setOpen=o=>{tray.classList.toggle('open',o);gear.classList.toggle('open',o);gear.setAttribute('aria-expanded',o);sfxPlay('tab')};
+ gear.onclick=e=>{e.stopPropagation();setOpen(!tray.classList.contains('open'))};
+ document.addEventListener('click',e=>{if(tray.classList.contains('open')&&!tray.contains(e.target))setOpen(false)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&tray.classList.contains('open'))setOpen(false)});
+})();
+// часы, дата и день недели (по языку интерфейса)
+function tickClock(){const d=new Date(),loc=LANG==='ru'?'ru-RU':'en-US';
+ const t=d.toLocaleTimeString(loc,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),
+  dt=d.toLocaleDateString(loc,{day:'numeric',month:'long',year:'numeric'}),dw=d.toLocaleDateString(loc,{weekday:'long'});
+ const a=$('#ctime'),b=$('#cdate'),c=$('#cday');
+ if(a.textContent!==t)a.textContent=t;if(b.textContent!==dt)b.textContent=dt;if(c.textContent!==dw)c.textContent=dw}
+tickClock();setInterval(tickClock,1000);
 applyLang();
 loadNews();
 </script>

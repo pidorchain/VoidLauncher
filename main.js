@@ -12,8 +12,10 @@ const SRV = require('./src/servers.js');
 const STATS = require('./src/stats.js');
 const NEWS = require('./src/news.js');
 const BK = require('./src/backup.js');
+const SOFT = require('./src/softs.js');
 const CR = require('./src/crash.js');
 const SK = require('./src/skins.js');
+const PROF = require('./src/profile.js');
 
 const ROOT = path.join(app.getPath('appData'), '.visuals-launcher');
 const SF = path.join(ROOT, 'launcher.json');
@@ -38,6 +40,7 @@ if (!LOADERS.includes(S.settings.loader)) S.settings.loader = S.settings.fab ===
 for (const k of Object.keys(S.broken || {})) if (!LDR_RE.test(k)) { S.broken[k + '-fabric'] = S.broken[k]; delete S.broken[k]; } // раньше «сломанным» помечалась версия, а не пара версия+загрузчик
 STATS.init(S); // статистика: S.sessions, S.playSec, S.playCount
 const persist = () => fs.writeFileSync(SF, JSON.stringify(S, null, 2));
+const PROFILE = PROF.create(S, persist); // профиль: ник + пароль, уникальный 8-значный ID выдаёт сервер
 // готовые серверы: один раз добавляются в список (потом их можно удалить — повторно не вернутся)
 const SRV_PRESETS = [['ReallyWorld', 'mc.reallyworld.ru'], ['FunTime', 'play.funtime.su'], ['AresMine', 'mc.aresmine.me'], ['HolyWorld', 'mc.holyworld.ru']];
 const SRV_OLD = { 'play.reallyworld.ru': 'mc.reallyworld.ru', 'mc.aresmine.ru': 'mc.aresmine.me' }; // исправленные адреса
@@ -56,7 +59,7 @@ if (!S.accounts.length) {
 const BG_EXT = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'];
 const bgFiles = () => { try { return fs.readdirSync(ROOT).filter(f => /^background\./i.test(f)); } catch { return []; } };
 const bgUrl = () => { const f = bgFiles()[0]; if (!f) return ''; try { const p = path.join(ROOT, f); return pathToFileURL(p).href + '?t=' + Math.floor(fs.statSync(p).mtimeMs); } catch { return ''; } };
-const pub = () => ({ bgUrl: bgUrl(), accounts: S.accounts.map(({ refresh, ...a }) => a), active: S.active, settings: S.settings, totalMem: Math.floor(os.totalmem() / 1048576) });
+const pub = () => ({ bgUrl: bgUrl(), accounts: S.accounts.map(({ refresh, ...a }) => a), active: S.active, settings: S.settings, profile: PROFILE.pub(), totalMem: Math.floor(os.totalmem() / 1048576) });
 
 let win; const running = new Map();
 // частые события (прогресс, лог) не чаще раза в 100–150 мс — иначе интерфейс захлёбывается
@@ -82,6 +85,13 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'src', 'index.html'));
 }
 app.whenReady().then(() => { if (!S.settings.lang) S.settings.lang = I18N.detect(app.getLocale()); createWindow(); });
+const PROF_ERR = { offline: 'm.prof.offline', nick_taken: 'm.prof.taken', bad_nick: 'm.nick', bad_password: 'm.prof.pass', bad_credentials: 'm.prof.cred', rate_limited: 'm.prof.rate', token_used: 'm.prof.used', full: 'm.prof.full' };
+ipcMain.handle('profile', () => PROFILE.refresh()); // с обновлением данных с сервера (значки, смена ID)
+ipcMain.handle('profileAuth', async (_, mode, nick, pass) => {
+  try { return await PROFILE.auth(mode === 'login' ? 'login' : 'signup', nick, pass); }
+  catch (e) { const c = String((e && e.message) || e); throw new Error(T(PROF_ERR[c] || 'm.prof.srv')); } // код ошибки сервера → текст на языке интерфейса
+});
+ipcMain.handle('profileLogout', () => PROFILE.logout());
 app.on('window-all-closed', () => app.quit());
 // лаунчер закрывают во время игры — записываем сыгранное до этого момента, иначе время потеряется
 app.on('before-quit', () => { for (const r of running.values()) recordSession(r); });
@@ -499,21 +509,27 @@ ipcMain.handle('modsRemove', (_, id, v, l, t) => {
 
 // ---- запуск (можно запускать несколько аккаунтов параллельно) ----
 const startGame = async (o = {}) => {
-  const { join, ...opts } = o; // join — адрес сервера из списка: заходим один раз, настройку «Автовход» не трогаем
+  const { join, inst, ...opts } = o; // join — адрес сервера из списка: заходим один раз, настройку «Автовход» не трогаем
+  // inst — отдельная папка игры для клиента (вкладка «Клиенты»): так обычная игра из вкладки «Играть» остаётся без клиента
   const acc = S.accounts.find(a => a.id === S.active);
   if (!acc) throw new Error(T('m.noacc'));
-  S.settings = { ...S.settings, ...opts }; persist();
-  const st = S.settings;
+  const keep = inst ? (({ version, loader, ...r }) => r)(opts) : opts; // запуск клиента не меняет версию и загрузчик, выбранные во вкладке «Играть»
+  S.settings = { ...S.settings, ...keep }; persist();
+  const st = inst ? { ...S.settings, version: opts.version || S.settings.version, loader: opts.loader || S.settings.loader } : S.settings;
   let srv = st.server;
   if (join) { const h = SRV.parseAddr(join); if (!h) throw new Error(T('m.srv.addr')); srv = SRV.fmtAddr(h); }
   if (installing.has(st.version)) throw new Error(T('m.installing'));
   if (!isInstalled(st.version)) await installVer(st.version);
-  const want = LOADERS.includes(st.loader) ? st.loader : 'vanilla', loader = (S.broken || {})[instOf(st.version, want)] ? 'vanilla' : want; // загрузчик, который падал на старте, пропускаем
+  const want = LOADERS.includes(st.loader) ? st.loader : 'vanilla', bkey = inst || instOf(st.version, want), loader = (S.broken || {})[bkey] ? 'vanilla' : want; // загрузчик, который падал на старте, пропускаем
   let jp = st.java;
   if (jp) { if (!await javaOk(jp)) throw new Error(T('m.java.bad')); }
   else { send('progress', { pct: 0, text: T('m.java.prep') }); jp = await ensureJava(await javaMajor(st.version)); }
-  const gdir = path.join(ROOT, 'instances', instOf(st.version, loader));
+  const gdir = path.join(ROOT, 'instances', inst || instOf(st.version, loader));
   fs.mkdirSync(gdir, { recursive: true });
+  if (inst) for (const f of ['options.txt', 'servers.dat']) { // первый запуск клиента: берём настройки и список серверов из обычной игры
+    const a = path.join(ROOT, 'instances', instOf(st.version, want), f), b = path.join(gdir, f);
+    try { if (fs.existsSync(a) && !fs.existsSync(b)) fs.copyFileSync(a, b); } catch {}
+  }
   if (bkAuto()) { // автобэкап: копируем только миры этого экземпляра, изменившиеся с прошлой копии; сбой не мешает запуску
     send('progress', { pct: 0, text: T('m.bk.p') });
     try { await bkLock(async () => bkRun(await BK_WORLDS_OF(path.basename(gdir)), { kind: 'auto', skipUnchanged: true, keep: bkKeep() })); }
@@ -546,15 +562,102 @@ const startGame = async (o = {}) => {
     if (early) entry.recorded = true; else recordSession(entry);
     if (code) crAuto(entry, code, gdir, early); // разбор вылета: придёт событие 'crash'
     if (early) { // загрузчик упал на старте — автоматически запускаем чистую игру
-      (S.broken = S.broken || {})[instOf(st.version, loader)] = true; persist(); send('log', T('m.ldr.crash', { l: LNAME[loader] }));
-      startGame({ loader: 'vanilla', join }).catch(e => send('log', e.message)); return;
+      (S.broken = S.broken || {})[bkey] = true; persist(); send('log', T('m.ldr.crash', { l: LNAME[loader] }));
+      startGame({ loader: 'vanilla', join, ...(inst ? { inst, version: st.version } : {}) }).catch(e => send('log', e.message)); return;
     }
     if (code) send('log', T('m.game.err', { code }));
   });
   sendList(); send('progress', { pct: 100, text: T('m.running') });
   return true;
 };
-ipcMain.handle('launch', (_, o) => startGame(o));
+ipcMain.handle('launch', (_, o) => { const { inst, ...rest } = o || {}; return startGame(rest); }); // «Играть» всегда запускает обычную игру: inst только для вкладки «Клиенты»
+
+// ---- софты: моды из GitHub Releases, ставятся в mods выбранной версии ----
+const softById = id => SOFT.SOFTS.find(s => s.id === id);
+const okVer = v => typeof v === 'string' && /^[\w.\-]{1,40}$/.test(v);
+const softVer = (s, v) => (s.versions && s.versions[0]) || v; // у клиента своя версия игры (versions[0]); выбранная во вкладке «Играть» не важна
+// Клиент ставится в СВОЮ сборку instances/<версия>-<загрузчик>-<id клиента>, а не в mods обычной игры. Обычный запуск клиента не видит.
+const softKey = (L, s) => L + '-' + s.id, softInst = (v, L, s) => instOf(v, softKey(L, s));
+const softsFile = (v, l) => path.join(modDir(v, l), '.softs.json');
+const recFiles = rec => (rec ? (Array.isArray(rec.files) ? rec.files : rec.file ? [rec.file] : []) : []).map(SOFT.safeName).filter(Boolean); // файлы софта из .softs.json (поддерживает старый формат с одним file)
+(function softCleanLegacy() { // старые версии лаунчера клали клиент в mods обычной сборки — убираем оттуда, чтобы обычная игра была чистой
+  const root = path.join(ROOT, 'instances'); let dirs = []; try { dirs = fs.readdirSync(root); } catch { return; }
+  for (const d of dirs) for (const s of SOFT.SOFTS) {
+    if (d.endsWith('-' + s.id)) continue;
+    try {
+      const md = path.join(root, d, 'mods'), f = path.join(md, '.softs.json'), R = readJ(f);
+      if (!R[s.id]) continue;
+      for (const n of recFiles(R[s.id])) fs.rmSync(path.join(md, n), { force: true });
+      delete R[s.id]; fs.writeFileSync(f, JSON.stringify(R));
+    } catch {}
+  }
+})();
+const relMem = {}; // repo → { t, rel }: последний релиз, чтобы не упереться в лимит GitHub API
+const getRelease = async (repo, force) => {
+  const c = relMem[repo];
+  if (!force && c && Date.now() - c.t < 10 * 60 * 1000) return c.rel;
+  const ac = new AbortController(), to = setTimeout(() => ac.abort(), 10000);
+  try {
+    const r = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, { headers: { ...UA, Accept: 'application/vnd.github+json' }, signal: ac.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const rel = SOFT.parseRelease(await r.json(), repo); if (!rel) throw new Error('bad release');
+    relMem[repo] = { t: Date.now(), rel }; return rel;
+  } catch { return c ? c.rel : null; } finally { clearTimeout(to); }
+};
+const softState = async (s, v, l, force) => {
+  v = softVer(s, v);
+  const L = softKey(modL(l), s), rel = await getRelease(s.repo, force), assets = rel && SOFT.pickAll(rel, s.asset, s.count || 1);
+  const rec = readJ(softsFile(v, L))[s.id] || {}, files = recFiles(rec), have = files.length >= (s.count || 1) && files.every(f => fs.existsSync(path.join(modDir(v, L), f)));
+  return { id: s.id, title: s.title, desc: s.desc, color: s.color, installed: have, tag: have ? String(rec.tag || '') : '', latest: assets ? rel.tag : '', size: assets ? assets.reduce((a, x) => a + x.size, 0) : 0, upd: have && !!assets && rec.tag !== rel.tag, online: !!assets, lock: !!s.check, ver: v };
+};
+const softInstall = async (s, v, l) => {
+  v = softVer(s, v);
+  const L = softKey(modL(l), s), rel = await getRelease(s.repo, true), assets = rel && SOFT.pickAll(rel, s.asset, s.count || 1);
+  if (!assets) throw new Error(T('m.soft.norel'));
+  const md = modDir(v, L), txt = T('m.soft.dl', { n: s.title }), tmps = [];
+  send('progress', { pct: 0, text: txt });
+  try { // сначала скачиваем ВСЕ файлы во временные .new, и только потом подменяем — при сбое на втором файле старая установка остаётся целой
+    for (let i = 0; i < assets.length; i++) {
+      const t = path.join(md, assets[i].name + '.new'); tmps.push(t);
+      await SOFT.download(assets[i], t, { headers: UA, onProgress: p => send('progress', { pct: Math.round((i * 100 + p) / assets.length), text: txt }), validate: f => BK.readEntries(f) });
+    }
+  } catch (e) {
+    for (const t of tmps) fs.rmSync(t, { force: true });
+    throw new Error(/zip/i.test(String(e && e.message)) ? T('m.soft.bad') : T('m.soft.err', { e: String((e && e.message) || e).slice(0, 80) }));
+  }
+  const R = readJ(softsFile(v, L)), names = assets.map(a => a.name);
+  for (const old of recFiles(R[s.id])) if (!names.includes(old)) fs.rmSync(path.join(md, old), { force: true }); // старая версия рядом с новой роняет Fabric (дубликат мода)
+  assets.forEach((a, i) => fs.renameSync(tmps[i], path.join(md, a.name)));
+  R[s.id] = { files: names, tag: rel.tag }; fs.writeFileSync(softsFile(v, L), JSON.stringify(R));
+  send('progress', { pct: 100, text: T('m.soft.done', { n: s.title }) });
+};
+const softArgs = (id, v) => { const s = softById(id); if (!s || !okVer(v)) throw new Error(T('m.soft.err', { e: 'bad args' })); return s; };
+ipcMain.handle('softs', (_, v, l, force) => okVer(v) ? Promise.all(SOFT.SOFTS.map(s => softState(s, v, l, force))) : []);
+ipcMain.handle('softInstall', async (_, id, v, l) => { const s = softArgs(id, v); await softInstall(s, v, l); return softState(s, v, l); });
+ipcMain.handle('softRemove', async (_, id, v, l) => {
+  const s = softArgs(id, v); v = softVer(s, v);
+  const L = softKey(modL(l), s), R = readJ(softsFile(v, L));
+  for (const f of recFiles(R[s.id])) fs.rmSync(path.join(modDir(v, L), f), { force: true });
+  delete R[s.id]; fs.mkdirSync(modDir(v, L), { recursive: true }); fs.writeFileSync(softsFile(v, L), JSON.stringify(R));
+  return softState(s, v, l);
+});
+// «Запустить»: ставим/обновляем мод → проверка ключа (если задана) → игра. Без успешной проверки игра не стартует.
+ipcMain.handle('softRun', async (_, id, o) => {
+  o = o || {}; const s = softArgs(id, o.version), v = softVer(s, o.version), L = modL(o.loader);
+  let st = await softState(s, v, L);
+  if (!st.installed || st.upd) { try { await softInstall(s, v, L); } catch (e) { if (!st.installed) throw e; send('log', e.message); } } // нет связи — берём то, что уже стоит
+  if (s.check) {
+    const rel = await getRelease(s.repo), a = rel && SOFT.pick(rel, s.check.asset);
+    if (!a) throw new Error(T('m.soft.nocheck'));
+    send('progress', { pct: 0, text: T('m.soft.key.p') });
+    const f = path.join(ROOT, 'softs', s.id, a.name);
+    try { await SOFT.download(a, f, { headers: UA }); } catch (e) { throw new Error(T('m.soft.err', { e: String((e && e.message) || e).slice(0, 80) })); }
+    let code; try { code = await SOFT.runCheck(f); } catch (e) { throw new Error(T('m.soft.err', { e: String((e && e.message) || e).slice(0, 80) })); }
+    if (code !== 0) throw new Error(T('m.soft.key'));
+  }
+  delete (S.broken || {})[softInst(v, L, s)]; // игрок явно запускает софт — загрузчик, упавший раньше, пробуем снова
+  return startGame({ ...o, version: v, loader: L, inst: softInst(v, L, s) }); // отдельная сборка: с клиентом играем только отсюда // игра запускается на версии клиента; саму версию startGame при необходимости скачает
+});
 
 // ---- статистика игры ----
 const recordSession = r => { if (STATS.record(S, r, Date.now())) { persist(); send('stats', STATS.summary(S, Date.now())); } };
