@@ -85,11 +85,11 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'src', 'index.html'));
 }
 app.whenReady().then(() => { if (!S.settings.lang) S.settings.lang = I18N.detect(app.getLocale()); createWindow(); });
-const PROF_ERR = { offline: 'm.prof.offline', nick_taken: 'm.prof.taken', bad_nick: 'm.nick', bad_password: 'm.prof.pass', bad_credentials: 'm.prof.cred', rate_limited: 'm.prof.rate', token_used: 'm.prof.used', full: 'm.prof.full' };
+const PROF_ERR = { offline: 'm.prof.offline', nick_taken: 'm.prof.taken', bad_nick: 'm.nick', bad_password: 'm.prof.pass', bad_credentials: 'm.prof.cred', rate_limited: 'm.prof.rate', token_used: 'm.prof.used', full: 'm.prof.full', banned: 'm.prof.banned' };
 ipcMain.handle('profile', () => PROFILE.refresh()); // с обновлением данных с сервера (значки, смена ID)
 ipcMain.handle('profileAuth', async (_, mode, nick, pass) => {
   try { return await PROFILE.auth(mode === 'login' ? 'login' : 'signup', nick, pass); }
-  catch (e) { const c = String((e && e.message) || e); throw new Error(T(PROF_ERR[c] || 'm.prof.srv')); } // код ошибки сервера → текст на языке интерфейса
+  catch (e) { const c = String((e && e.message) || e); throw new Error(T(PROF_ERR[c] || 'm.prof.srv') + (c === 'banned' && e.reason ? ': ' + e.reason : '')); } // код ошибки сервера → текст на языке интерфейса
 });
 ipcMain.handle('profileLogout', () => PROFILE.logout());
 app.on('window-all-closed', () => app.quit());
@@ -511,6 +511,7 @@ ipcMain.handle('modsRemove', (_, id, v, l, t) => {
 const startGame = async (o = {}) => {
   const { join, inst, ...opts } = o; // join — адрес сервера из списка: заходим один раз, настройку «Автовход» не трогаем
   // inst — отдельная папка игры для клиента (вкладка «Клиенты»): так обычная игра из вкладки «Играть» остаётся без клиента
+  if (S.profile && S.profile.banned) throw new Error(T('m.prof.banned') + (S.profile.banReason ? ': ' + S.profile.banReason : '')); // забаненный профиль играть не может
   const acc = S.accounts.find(a => a.id === S.active);
   if (!acc) throw new Error(T('m.noacc'));
   const keep = inst ? (({ version, loader, ...r }) => r)(opts) : opts; // запуск клиента не меняет версию и загрузчик, выбранные во вкладке «Играть»
