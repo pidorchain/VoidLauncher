@@ -511,7 +511,8 @@ ipcMain.handle('modsRemove', (_, id, v, l, t) => {
 const startGame = async (o = {}) => {
   const { join, inst, ...opts } = o; // join — адрес сервера из списка: заходим один раз, настройку «Автовход» не трогаем
   // inst — отдельная папка игры для клиента (вкладка «Клиенты»): так обычная игра из вкладки «Играть» остаётся без клиента
-  if (S.profile && S.profile.banned) throw new Error(T('m.prof.banned') + (S.profile.banReason ? ': ' + S.profile.banReason : '')); // забаненный профиль играть не может
+  const why = await PROFILE.gate(); // бан или давно не было проверки профиля сервером
+  if (why) throw new Error(why === 'banned' ? T('m.prof.banned') + (S.profile.banReason ? ': ' + S.profile.banReason : '') : T('m.prof.stale'));
   const acc = S.accounts.find(a => a.id === S.active);
   if (!acc) throw new Error(T('m.noacc'));
   const keep = inst ? (({ version, loader, ...r }) => r)(opts) : opts; // запуск клиента не меняет версию и загрузчик, выбранные во вкладке «Играть»
